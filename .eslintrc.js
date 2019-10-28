@@ -20,24 +20,11 @@ module.exports = {
         "vue"
     ],
     "rules": {
-        // "indent": [
-        //     "error",
-        //     4,
-        //     {
-        //         "SwitchCase": 1
-        //     }
-        // ],
         'indent': 'off',
         'vue/script-indent': ['error', 4, {'baseIndent': 1}],
         'vue/html-indent': ['error', 4, {'baseIndent': 1}],
-        "quotes": [
-            "error",
-            "single"
-        ],
-        "semi": [
-            "error",
-            "always"
-        ],
+        "quotes": 0,
+        "semi": 0,
         "space-before-function-paren": "off",
         "eqeqeq": "warn",
         "no-console": "warn",
