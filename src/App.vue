@@ -39,19 +39,19 @@
                 </md-table>
             </md-card>
             <div class="demo">
-
+                <google-map></google-map>
             </div>
         </div>
     </div>
 </template>
 
 <script>
-    // import HelloWorld from './components/HelloWorld.vue';
+    import GoogleMap from './components/GoogleMap.vue';
 
     export default {
         name: 'app',
         components: {
-            // HelloWorld
+            GoogleMap
         }
     };
 </script>
@@ -72,6 +72,6 @@
     .demo {
         width: 100%;
         height: 100%;
-        background-color: antiquewhite;
+        /*background-color: antiquewhite;*/
     }
 </style>
