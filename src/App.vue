@@ -1,8 +1,8 @@
 <template>
     <div class="app">
-        <md-toolbar class="md-accent" md-elevation="1">
+        <md-toolbar class="md-title" md-elevation="1">
             <h3 class="md-title" style="flex: 1">Japan Airport Map</h3>
-
+            <!--Change map type-->
             <md-menu md-size="medium" md-align-trigger>
                 <md-button md-menu-trigger>MapType</md-button>
                 <md-menu-content style="background-color: white">
@@ -12,35 +12,20 @@
                     <md-button md-menu-trigger @click="selectMapType('terrain')">terrain</md-button>
                 </md-menu-content>
             </md-menu>
+            <!--Change Language-->
+            <md-menu md-size="medium" md-align-trigger>
+                <md-button md-menu-trigger>Language</md-button>
+                <md-menu-content style="background-color: white">
+                    <md-button md-menu-trigger @click="selectLanguage('English')">🇬🇧 English</md-button>
+                    <md-button md-menu-trigger @click="selectLanguage('Japanese')">🇯🇵 Japanese</md-button>
+                    <md-button md-menu-trigger @click="selectLanguage('Chinese')">🇨🇳 Chinese</md-button>
+                </md-menu-content>
+            </md-menu>
         </md-toolbar>
         <div class="body">
-            <md-card>
-                <md-table style="width: 408px">
-                    <md-table-row>
-                        <md-table-head md-numeric>ID</md-table-head>
-                        <md-table-head>Name</md-table-head>
-                        <md-table-head>Email</md-table-head>
-                    </md-table-row>
+            <div style="width: 408px">
 
-                    <md-table-row>
-                        <md-table-cell md-numeric>1</md-table-cell>
-                        <md-table-cell>Shawna Dubbin</md-table-cell>
-                        <md-table-cell>sdubbin0@geocities.com</md-table-cell>
-                    </md-table-row>
-
-                    <md-table-row>
-                        <md-table-cell md-numeric>2</md-table-cell>
-                        <md-table-cell>Odette Demageard</md-table-cell>
-                        <md-table-cell>odemageard1@spotify.com</md-table-cell>
-                    </md-table-row>
-
-                    <md-table-row>
-                        <md-table-cell md-numeric>3</md-table-cell>
-                        <md-table-cell>Vera Taleworth</md-table-cell>
-                        <md-table-cell>vtaleworth2@google.ca</md-table-cell>
-                    </md-table-row>
-                </md-table>
-            </md-card>
+            </div>
             <div class="demo">
                 <google-map :map-type="mapType"></google-map>
             </div>
@@ -63,9 +48,11 @@
         },
         methods: {
             selectMapType(type) {
+                this.mapType = type
+            },
+            selectLanguage(type) {
                 // eslint-disable-next-line no-console
                 console.log(type)
-                this.mapType = type
             }
         }
     };
