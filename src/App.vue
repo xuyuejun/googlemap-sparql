@@ -2,13 +2,16 @@
     <div class="app">
         <md-toolbar class="md-accent" md-elevation="1">
             <h3 class="md-title" style="flex: 1">Japan Airport Map</h3>
-            <md-tabs>
-                <md-tab id="tab-home" md-label="Home"></md-tab>
-                <md-tab id="tab-pages" md-label="Pages"></md-tab>
-                <md-tab id="tab-posts" md-label="Posts"></md-tab>
-                <md-tab id="tab-favorites" md-label="Favorites"></md-tab>
-            </md-tabs>
-            <!--<md-button>Refresh</md-button>-->
+
+            <md-menu md-size="medium" md-align-trigger>
+                <md-button md-menu-trigger>MapType</md-button>
+                <md-menu-content style="background-color: white">
+                    <md-button md-menu-trigger @click="selectMapType('roadmap')">roadmap</md-button>
+                    <md-button md-menu-trigger @click="selectMapType('satellite')">satellite</md-button>
+                    <md-button md-menu-trigger @click="selectMapType('hybrid')">hybrid</md-button>
+                    <md-button md-menu-trigger @click="selectMapType('terrain')">terrain</md-button>
+                </md-menu-content>
+            </md-menu>
         </md-toolbar>
         <div class="body">
             <md-card>
@@ -39,7 +42,7 @@
                 </md-table>
             </md-card>
             <div class="demo">
-                <google-map></google-map>
+                <google-map :map-type="mapType"></google-map>
             </div>
         </div>
     </div>
@@ -52,6 +55,18 @@
         name: 'app',
         components: {
             GoogleMap
+        },
+        data() {
+            return {
+                mapType: 'roadmap',
+            }
+        },
+        methods: {
+            selectMapType(type) {
+                // eslint-disable-next-line no-console
+                console.log(type)
+                this.mapType = type
+            }
         }
     };
 </script>

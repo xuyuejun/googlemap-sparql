@@ -1,10 +1,12 @@
 <template>
     <div class="container">
+        <!--{{ zoom }}-->
+        <!--<button @click="testButton">Test Button</button>-->
         <GmapMap
-            :center="{lat:10, lng:10}"
-            :zoom="7"
-            map-type-id="terrain"
-            style="width: 100%; height: 100%"
+            :center="center"
+            :zoom="zoom"
+            :map-type-id="mapType"
+            class="map"
         >
             <GmapMarker
                 :key="index"
@@ -21,9 +23,36 @@
 <script>
     export default {
         name: 'GoogleMap',
+        props: [
+            "mapType"
+        ],
+        data() {
+            return {
+                center: {
+                    lat: 35.41,
+                    lng: 139.41
+                },
+                zoom: 5,
+                markers: [{
+                    position: {lng: 120.4, lat: 30.2},
+                    orderId: '123456',
+                    name: '吴韩伟',
+                    show: false,
+                }, {
+                    position: {lng: 120.5, lat: 30.2},
+                    orderId: '654321',
+                    name: '姚永琪',
+                    show: false,
+                }]
+            }
+        },
         mounted() {
+
         },
         methods: {
+            testButton() {
+                this.zoom = this.zoom + 1
+            }
         }
     };
 </script>
@@ -34,5 +63,9 @@
         background-color: cornflowerblue;
         height: 100%;
         width: 100%;
+    }
+    .map {
+        width: 100%;
+        height: 100%;
     }
 </style>
