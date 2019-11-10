@@ -3,6 +3,7 @@
         <md-toolbar class="md-title" md-elevation="1">
             <h3 class="md-title" style="flex: 1">Japan Airport Map</h3>
             <!--Change map type-->
+            <md-button @click="debugMode()">Debugger</md-button>
             <md-menu md-size="medium" md-align-trigger>
                 <md-button md-menu-trigger>MapType</md-button>
                 <md-menu-content style="background-color: white">
@@ -24,19 +25,21 @@
         </md-toolbar>
         <md-content class="body">
             <div style="width: 408px;overflow: auto" class="md-scrollbar md-theme-default">
-                <md-list class="md-double-line">
-                    <md-list-item>
-                        <div class="md-list-item-text">
-                            <span>名古屋飛行場</span>
-                            <span class="md-primary">愛知県豊山町、小牧市、春日井市、名古屋市</span>
-                        </div>
+                <div v-for="(position,index) in positions" v-bind:key="index">
+                    <md-list class="md-double-line">
+                        <md-list-item>
+                            <div class="md-list-item-text">
+                                <span>{{ position.label }}</span>
+                                <span class="md-primary">{{ position.address }}</span>
+                            </div>
 
-                        <md-button class="md-icon-button md-list-action">
-                            <md-icon class="md-primary">public</md-icon>
-                        </md-button>
-                    </md-list-item>
-                    <md-divider></md-divider>
-                </md-list>
+                            <md-button class="md-icon-button md-list-action" @click="link(position.web)">
+                                <md-icon class="md-primary">public</md-icon>
+                            </md-button>
+                        </md-list-item>
+                        <md-divider></md-divider>
+                    </md-list>
+                </div>
             </div>
             <div class="demo">
                 <google-map :map-type="mapType"></google-map>
@@ -56,6 +59,20 @@
         data() {
             return {
                 mapType: 'roadmap',
+                // position: [{}]
+                positions: [{
+                    label: 'ニセコヘリポート',
+                    address: '北海道虻田郡ニセコ町曽我870番',
+                    web: 'http://ja.dbpedia.org/resource/%E3%83%8B%E3%82%BB%E3%82%B3%E3%83%98%E3%83%AA%E3%83%9D%E3%83%BC%E3%83%88'
+                }, {
+                    label: '下地島空港',
+                    address: '沖縄県宮古島市伊良部',
+                    web: 'http://ja.dbpedia.org/resource/%E4%B8%8B%E5%9C%B0%E5%B3%B6%E7%A9%BA%E6%B8%AF'
+                }, {
+                    label: '与那国空港',
+                    address: '沖縄県八重山郡与那国町',
+                    web: ''
+                }]
             }
         },
         methods: {
@@ -65,6 +82,12 @@
             selectLanguage(type) {
                 // eslint-disable-next-line no-console
                 console.log(type)
+            },
+            link(url) {
+                window.open(url, '_blank')
+            },
+            debugMode() {
+                console.log("Fuck You Four Letter Man!")
             }
         }
     };
