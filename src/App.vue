@@ -22,14 +22,26 @@
                 </md-menu-content>
             </md-menu>
         </md-toolbar>
-        <div class="body">
-            <div style="width: 408px">
+        <md-content class="body">
+            <div style="width: 408px;overflow: auto" class="md-scrollbar md-theme-default">
+                <md-list class="md-double-line">
+                    <md-list-item>
+                        <div class="md-list-item-text">
+                            <span>名古屋飛行場</span>
+                            <span class="md-primary">愛知県豊山町、小牧市、春日井市、名古屋市</span>
+                        </div>
 
+                        <md-button class="md-icon-button md-list-action">
+                            <md-icon class="md-primary">public</md-icon>
+                        </md-button>
+                    </md-list-item>
+                    <md-divider></md-divider>
+                </md-list>
             </div>
             <div class="demo">
                 <google-map :map-type="mapType"></google-map>
             </div>
-        </div>
+        </md-content>
     </div>
 </template>
 
