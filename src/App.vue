@@ -25,15 +25,15 @@
         </md-toolbar>
         <md-content class="body">
             <div style="width: 408px;overflow: auto" class="md-scrollbar md-theme-default">
-                <div v-for="(position,index) in positions" v-bind:key="index">
+                <div v-for="(marker,index) in markers" v-bind:key="index">
                     <md-list class="md-double-line">
                         <md-list-item>
                             <div class="md-list-item-text">
-                                <span>{{ position.label }}</span>
-                                <span class="md-primary">{{ position.address }}</span>
+                                <span>{{ marker.label }}</span>
+                                <span class="md-primary">{{ marker.address }}</span>
                             </div>
 
-                            <md-button class="md-icon-button md-list-action" @click="link(position.web)">
+                            <md-button class="md-icon-button md-list-action" @click="link(marker.web)">
                                 <md-icon class="md-primary">public</md-icon>
                             </md-button>
                         </md-list-item>
@@ -42,7 +42,7 @@
                 </div>
             </div>
             <div class="demo">
-                <google-map :map-type="mapType"></google-map>
+                <google-map :map-type="mapType" :markers="markers"></google-map>
             </div>
         </md-content>
     </div>
@@ -50,6 +50,7 @@
 
 <script>
     import GoogleMap from './components/GoogleMap.vue';
+    import sparqlApi from './api/runsparql.js'
 
     export default {
         name: 'app',
@@ -59,21 +60,18 @@
         data() {
             return {
                 mapType: 'roadmap',
-                // position: [{}]
-                positions: [{
-                    label: 'ニセコヘリポート',
-                    address: '北海道虻田郡ニセコ町曽我870番',
-                    web: 'http://ja.dbpedia.org/resource/%E3%83%8B%E3%82%BB%E3%82%B3%E3%83%98%E3%83%AA%E3%83%9D%E3%83%BC%E3%83%88'
-                }, {
-                    label: '下地島空港',
-                    address: '沖縄県宮古島市伊良部',
-                    web: 'http://ja.dbpedia.org/resource/%E4%B8%8B%E5%9C%B0%E5%B3%B6%E7%A9%BA%E6%B8%AF'
-                }, {
-                    label: '与那国空港',
-                    address: '沖縄県八重山郡与那国町',
-                    web: ''
-                }]
+                // markers: [{
+                //     position: {lng: 120.4, lat: 30.2},
+                //     label: 'ニセコヘリポート',
+                //     address: '北海道虻田郡ニセコ町曽我870番',
+                //     web: 'http://ja.dbpedia.org/resource/%E3%83%8B%E3%82%BB%E3%82%B3%E3%83%98%E3%83%AA%E3%83%9D%E3%83%BC%E3%83%88',
+                //     show: false,
+                // }],
+                markers: []
             }
+        },
+        created() {
+            this.initData()
         },
         methods: {
             selectMapType(type) {
@@ -87,7 +85,49 @@
                 window.open(url, '_blank')
             },
             debugMode() {
-                console.log("Fuck You Four Letter Man!")
+                console.log("degbugMode")
+            },
+            sparql(endpoint, query) {
+                let url = endpoint + '?query=' + encodeURIComponent(query);
+                // eslint-disable-next-line no-console
+                console.log(url)
+                sparqlApi.runSparql(encodeURIComponent(query)).then(({ data }) => {
+                    console.log(data.results.bindings)
+                    data.results.bindings.forEach(item => {
+                        this.markers.push({
+                            label: item.label.value,
+                            address: item.address.value,
+                            web: item.s.value,
+                            position: {
+                                lng: Number(item.lng.value),
+                                lat: Number(item.lat.value)
+                            }
+                        })
+                    })
+                })
+            },
+            initData() {
+                let wikidataUrl = 'http://ja.dbpedia.org/sparql'
+
+                let catQuery = `
+
+                PREFIX dbpedia-ja: <http://ja.dbpedia.org/resource/>
+                PREFIX dbpedia-owl: <http://dbpedia.org/ontology/>
+                PREFIX foaf:  <http://xmlns.com/foaf/0.1/>
+                PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+
+                SELECT * WHERE {
+                   ?s rdf:type dbpedia-owl:Airport ;
+                      prop-ja:所在地 ?address .
+                      OPTIONAL { ?s rdfs:label ?label . }
+                      OPTIONAL {
+                   ?s geo:long ?lng ;
+                      geo:lat ?lat .
+                      }
+                      FILTER REGEX(?address, "^\\\\p{Han}{2,3}[都道府県]")
+                } ORDER BY ?s
+                    `
+                this.sparql(wikidataUrl, catQuery)
             }
         }
     };

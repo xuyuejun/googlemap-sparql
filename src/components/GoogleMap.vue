@@ -24,7 +24,8 @@
     export default {
         name: 'GoogleMap',
         props: [
-            "mapType"
+            "mapType",
+            "markers"
         ],
         data() {
             return {
@@ -33,17 +34,13 @@
                     lng: 139.41
                 },
                 zoom: 5,
-                markers: [{
-                    position: {lng: 120.4, lat: 30.2},
-                    orderId: '123456',
-                    name: '吴韩伟',
-                    show: false,
-                }, {
-                    position: {lng: 120.5, lat: 30.2},
-                    orderId: '654321',
-                    name: '姚永琪',
-                    show: false,
-                }]
+                // markers: [{
+                //     position: {lng: 120.4, lat: 30.2},
+                //     label: 'ニセコヘリポート',
+                //     address: '北海道虻田郡ニセコ町曽我870番',
+                //     web: 'http://ja.dbpedia.org/resource/%E3%83%8B%E3%82%BB%E3%82%B3%E3%83%98%E3%83%AA%E3%83%9D%E3%83%BC%E3%83%88',
+                //     show: false
+                // }]
             }
         },
         mounted() {
