@@ -1,63 +1,14 @@
 <template>
-    <!--
-    <div class="app">
-        <md-toolbar class="md-title" md-elevation="1">
-            <h3 class="md-title" style="flex: 1">Japan Airport Map</h3>
-            Change map type
-            <md-button @click="debugMode()">Debugger</md-button>
-            <md-menu md-size="medium" md-align-trigger>
-                <md-button md-menu-trigger>MapType</md-button>
-                <md-menu-content style="background-color: white">
-                    <md-button md-menu-trigger @click="selectMapType('roadmap')">roadmap</md-button>
-                    <md-button md-menu-trigger @click="selectMapType('satellite')">satellite</md-button>
-                    <md-button md-menu-trigger @click="selectMapType('hybrid')">hybrid</md-button>
-                    <md-button md-menu-trigger @click="selectMapType('terrain')">terrain</md-button>
-                </md-menu-content>
-            </md-menu>
-            Change Language
-            <md-menu md-size="medium" md-align-trigger>
-                <md-button md-menu-trigger>Language</md-button>
-                <md-menu-content style="background-color: white">
-                    <md-button md-menu-trigger @click="selectLanguage('English')">🇬🇧 English</md-button>
-                    <md-button md-menu-trigger @click="selectLanguage('Japanese')">🇯🇵 Japanese</md-button>
-                    <md-button md-menu-trigger @click="selectLanguage('Chinese')">🇨🇳 Chinese</md-button>
-                </md-menu-content>
-            </md-menu>
-        </md-toolbar>
-        <md-content class="body">
-            <div style="width: 408px;overflow: auto" class="md-scrollbar md-theme-default">
-                <div v-for="(marker,index) in markers" v-bind:key="index">
-                    <md-list class="md-double-line">
-                        <md-list-item>
-                            <div class="md-list-item-text">
-                                <span>{{ marker.label }}</span>
-                                <span class="md-primary">{{ marker.address }}</span>
-                            </div>
-
-                            <md-button class="md-icon-button md-list-action" @click="link(marker.web)">
-                                <md-icon class="md-primary">public</md-icon>
-                            </md-button>
-                        </md-list-item>
-                        <md-divider></md-divider>
-                    </md-list>
-                </div>
-            </div>
-            <div class="demo">
-                <google-map :map-type="mapType" :markers="markers"></google-map>
-            </div>
-        </md-content>
-    </div>
-    -->
     <div>
         <el-container style="height: 100vh; border: 1px solid #eee">
             <el-aside width="auto" style="background-color: rgb(238, 241, 246)">
-                <el-menu default-active="1-4-1" class="el-menu-vertical-demo" @open="handleOpen" @close="handleClose" :collapse="isCollapse" style="height: 100%">
+                <el-menu default-active="1-4-1" class="el-menu-vertical-demo" @open="handleOpenMenu" @close="handleCloseMenu" :collapse="isCollapse" style="height: 100%">
                     <el-menu-item index="1" v-model="isCollapse" @click="isCollapse = !isCollapse">
                         <i class="el-icon-s-unfold" v-if="isCollapse === true"></i>
                         <i class="el-icon-s-fold" v-else></i>
                         <span slot="title">菜单</span>
                     </el-menu-item>
-                    <el-menu-item index="2">
+                    <el-menu-item index="2" @click="drawer = true">
                         <i class="el-icon-search"></i>
                         <span slot="title">搜索</span>
                     </el-menu-item>
@@ -112,19 +63,37 @@
 
             <el-container>
                 <el-header>
-                    <el-drawer
-                        title="我是标题"
-                        :visible.sync="drawer"
-                        :direction="direction"
-                        :modal="false"
-                        :before-close="handleCloseDrawer">
-                        <span>我来啦!</span>
-                    </el-drawer>
+                    <el-button @click="drawer = true" type="primary" style="margin-left: 16px;">
+                        点我打开
+                    </el-button>
                 </el-header>
                 <el-main style="padding: 0px">
                     <google-map :map-type="mapType" :markers="markers"></google-map>
                 </el-main>
             </el-container>
+
+            <el-drawer
+                title="搜索机场"
+                :visible.sync="drawer"
+                :direction="direction"
+                :with-header="false"
+            >
+                <div class="drawer-title">我嵌套了搜索程序!</div>
+                <div class="drawer-content">
+                    <el-form :model="form">
+                        <el-form-item label="选择国家" :label-width="formLabelWidth">
+                            <el-select v-model="form.region" placeholder="请选择国家">
+                                <el-option label="区域一" value="shanghai"></el-option>
+                                <el-option label="区域二" value="beijing"></el-option>
+                            </el-select>
+                        </el-form-item>
+                    </el-form>
+                    <div class="drawer-footer">
+                        <el-button>取 消</el-button>
+                        <el-button type="primary">{{ '确 定' }}</el-button>
+                    </div>
+                </div>
+            </el-drawer>
         </el-container>
     </div>
 </template>
@@ -145,30 +114,34 @@
                 isCollapse: true,
                 isShowDetail: false,
                 drawer: false,
-                direction: 'rtl'
+                direction: 'ltr',
+
+                form: {
+                    name: '',
+                    region: '',
+                    date1: '',
+                    date2: '',
+                    delivery: false,
+                    type: [],
+                    resource: '',
+                    desc: ''
+                },
+                formLabelWidth: '80px',
+                timer: null,
             }
         },
         created() {
 
         },
         methods: {
-            handleOpen(key, keyPath) {
+            handleOpenMenu(key, keyPath) {
                 console.log(key, keyPath);
             },
-            handleClose(key, keyPath) {
+            handleCloseMenu(key, keyPath) {
                 console.log(key, keyPath);
             },
             selectMapType(type) {
                 this.mapType = type
-            },
-            handleCloseDrawer(done) {
-                this.$confirm('确认关闭？')
-                    // eslint-disable-next-line no-unused-vars
-                    .then(_ => {
-                        done();
-                    })
-                    // eslint-disable-next-line no-unused-vars
-                    .catch(_ => {});
             }
         }
     };
@@ -183,5 +156,19 @@
 
     .el-aside {
         color: #333;
+    }
+    .drawer-title {
+        align-items: center;
+        color: #72767b;
+        font-size: 16px;
+        display: flex;
+        margin-bottom: 32px;
+        padding: 20px 20px 0;
+    }
+    .drawer-content {
+        padding: 20px;
+    }
+    .drawer-footer {
+        display: flex;
     }
 </style>
