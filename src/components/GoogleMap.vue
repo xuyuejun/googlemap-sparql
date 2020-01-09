@@ -6,6 +6,15 @@
             :center="center"
             :zoom="zoom"
             :map-type-id="mapType"
+            :options="{
+                zoomControl: true,
+                mapTypeControl: false,
+                scaleControl: false,
+                streetViewControl: false,
+                rotateControl: false,
+                fullscreenControl: true,
+                disableDefaultUi: false
+            }"
             class="map"
         >
             <GmapMarker
