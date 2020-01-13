@@ -12,8 +12,11 @@ import * as VueGoogleMaps from 'vue2-google-maps'
 import axios from "axios";
 import VueAxios from 'vue-axios';
 
+import pointToLatLng from "./assets/pointToLatLng";
+
 Vue.use(VueAxios, axios);
 Vue.use(ElementUI);
+Vue.use(pointToLatLng)
 
 Vue.axios.defaults.headers.get['Content-Type'] = 'application/sparql-results+json';
 
