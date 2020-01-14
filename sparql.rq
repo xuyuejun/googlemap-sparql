@@ -3,19 +3,22 @@ PREFIX dbpedia-owl: <http://dbpedia.org/ontology/>
 PREFIX foaf:  <http://xmlns.com/foaf/0.1/>
 PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
 
-#日本の空港の位置情報とラベルがあれば一緒に抽出
-SELECT * WHERE {
-     ?s rdf:type dbpedia-owl:Airport ;
-        prop-ja:所在地 ?address .
-        OPTIONAL { ?s rdfs:label ?label . }
-        OPTIONAL {
-     ?s geo:long ?lng ;
-        geo:lat ?lat .
-       }
-        FILTER REGEX(?address, "^\\p{Han}{2,3}[都道府県]")
-} ORDER BY ?s
+//search country old
+//bug no russia
+SELECT ?country ?label
+WHERE
+{
+    ?country wdt:P31 wd:Q6256.
+    ?country rdfs:label ?label filter (lang(?label) = "zh").
+}
 
+//search country new
+SELECT ?country ?countryLabel WHERE {
+  ?country wdt:P463 wd:Q1065.
+  SERVICE wikibase:label { bd:serviceParam wikibase:language "zh". }
+}
 
+//Japan airport
 SELECT ?airport ?airportLabel ?place_served ?coor ?website ?image WHERE {
   ?airport wdt:P17 wd:Q17;
     wdt:P31 wd:Q1248784;

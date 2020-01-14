@@ -17,6 +17,14 @@ const endpointUrl = 'https://query.wikidata.org/sparql';
 const queryDispatcher = new SPARQLQueryDispatcher( endpointUrl );
 
 export default {
+    searchCountry (){
+        const searchCountry = `SELECT ?country ?label WHERE {
+            ?country wdt:P31 wd:Q6256.
+            ?country rdfs:label ?label filter (lang(?label) = "zh").
+        }`;
+
+        return queryDispatcher.query( searchCountry )
+    },
     searchAirport (country) {
         const searchAirport = `SELECT ?airport ?airportLabel ?place_served ?coor ?website ?image WHERE {
           ?airport wdt:P17 wd:`+ country +`;

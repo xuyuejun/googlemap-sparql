@@ -13,7 +13,7 @@
                         <span slot="title">搜索</span>
                     </el-menu-item>
                     <el-menu-item index="3">
-                        <i class="el-icon-position"></i>
+                        <i class="el-icon-position" @click="searchAirLine"></i>
                         <span slot="title">航线</span>
                     </el-menu-item>
                     <el-menu-item index="4" @click="isShowDetail = !isShowDetail">
@@ -45,10 +45,8 @@
                             <el-menu-item index="1-3">Japanese</el-menu-item>
                         </el-menu-item-group>
                     </el-submenu>
-
                 </el-menu>
             </el-aside>
-
             <el-aside width="200px" v-if="isShowDetail">
                 <el-card class="box-card">
                     <div slot="header" class="clearfix">
@@ -59,12 +57,20 @@
                         {{'列表内容 ' + o }}
                     </div>
                 </el-card>
+                <el-card class="box-card">
+                    <div slot="header" class="clearfix">
+                        <span>卡片名称</span>
+                        <el-button style="float: right; padding: 3px 0" type="text">操作按钮</el-button>
+                    </div>
+                    <div v-for="o in 4" :key="o" class="text item">
+                        {{'列表内容 ' + o }}
+                    </div>
+                </el-card>
             </el-aside>
-
             <el-container>
                 <el-header>
-                    <el-button @click="drawer = true" type="primary" style="margin-left: 16px;">
-                        点我打开
+                    <el-button @click="test" type="primary" style="margin-left: 16px;">
+                        点我
                     </el-button>
                 </el-header>
                 <el-main style="padding: 0px">
@@ -82,15 +88,20 @@
                 <div class="drawer-content">
                     <el-form :model="form">
                         <el-form-item label="选择国家" :label-width="formLabelWidth">
-                            <el-select v-model="form.region" placeholder="请选择国家">
-                                <el-option label="区域一" value="shanghai"></el-option>
-                                <el-option label="区域二" value="beijing"></el-option>
+                            <el-select v-model="selectedCountry" filterable placeholder="请选择国家">
+                                <el-option
+                                    v-for="item in countryList"
+                                    :key="item.country"
+                                    :label="item.label"
+                                    :value="item.country"
+                                >
+                                </el-option>
                             </el-select>
                         </el-form-item>
                     </el-form>
                     <div class="drawer-footer">
-                        <el-button>取 消</el-button>
-                        <el-button type="primary">{{ '确 定' }}</el-button>
+                        <el-button @click="drawer = false">取 消</el-button>
+                        <el-button type="primary" @click="searchButton">{{ '确 定' }}</el-button>
                     </div>
                 </div>
             </el-drawer>
@@ -100,7 +111,8 @@
 
 <script>
     import GoogleMap from './components/GoogleMap.vue';
-    // import sparqlApi from './api/runsparql.js'
+    import sparqlApi from './api/runsparql.js'
+    import pointToLatLng from "./assets/pointToLatLng";
 
     export default {
         name: 'app',
@@ -128,10 +140,12 @@
                 },
                 formLabelWidth: '80px',
                 timer: null,
+                selectedCountry: '',
+                countryList: []
             }
         },
         created() {
-
+            this.searchCountry()
         },
         methods: {
             handleOpenMenu(key, keyPath) {
@@ -142,6 +156,44 @@
             },
             selectMapType(type) {
                 this.mapType = type
+            },
+            searchButton() {
+                this.drawer = false
+                this.searchAirLine()
+            },
+            searchCountry() {
+                sparqlApi.searchCountry().then((data) => {
+                    console.log("显示data")
+                    console.log(data)
+                    data.results.bindings.forEach(item => {
+                        this.countryList.push({
+                            country: item.country.value.substring(31),
+                            label: item.label.value
+                        })
+                    })
+                })
+            },
+            searchAirLine() {
+                sparqlApi.searchAirport(this.selectedCountry).then((data) => {
+                    this.markers = []
+                    data.results.bindings.forEach(item => {
+                        // eslint-disable-next-line no-console
+                        console.log(item)
+                        this.markers.push({
+                            label: item.airport.value,
+                            address: item.airportLabel.value,
+                            web: item.website.value,
+                            position: pointToLatLng.pointToLat(item.coor.value)
+                        })
+                    })
+                })
+            },
+            test() {
+                console.log(this.countryList)
+            },
+            test2() {
+                console.log(pointToLatLng.pointToLat("Point(-15.749 28.536)"))
+
             }
         }
     };

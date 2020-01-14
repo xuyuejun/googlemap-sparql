@@ -1,7 +1,5 @@
 <template>
     <div class="container">
-        <!--{{ zoom }}-->
-        <!--<button @click="testButton">Test Button</button>-->
         <GmapMap
             :center="center"
             :zoom="zoom"
@@ -22,9 +20,13 @@
                 v-for="(m, index) in markers"
                 :position="m.position"
                 :clickable="true"
-                :draggable="true"
-                @click="center=m.position"
+                :icon="image"
+                @click="test(m)"
             />
+            <GmapPolyline
+                :path="paths"
+            />
+            <!--@click="center=m.position"-->
         </GmapMap>
     </div>
 </template>
@@ -43,21 +45,22 @@
                     lng: 139.41
                 },
                 zoom: 5,
-                // markers: [{
-                //     position: {lng: 120.4, lat: 30.2},
-                //     label: 'ニセコヘリポート',
-                //     address: '北海道虻田郡ニセコ町曽我870番',
-                //     web: 'http://ja.dbpedia.org/resource/%E3%83%8B%E3%82%BB%E3%82%B3%E3%83%98%E3%83%AA%E3%83%9D%E3%83%BC%E3%83%88',
-                //     show: false
-                // }]
+                paths: [
+                    {lat: 37.772, lng: -122.214},
+                    {lat: 21.291, lng: -157.821},
+                    {lat: -18.142, lng: 178.431},
+                    {lat: -27.467, lng: 153.027}
+                ],
+                image: 'https://www.google.co.jp/maps/vt/icon/name=assets/icons/poi/tactile/pinlet_shadow-2-medium.png,assets/icons/poi/tactile/pinlet_outline_v2-2-medium.png,assets/icons/poi/tactile/pinlet-2-medium.png,assets/icons/poi/quantum/pinlet/airport_pinlet-2-medium.png&highlight=ff000000,ffffff,ea4335,ffffff?scale=1',
+                // image: 'https://www.google.es/maps/vt/icon/name=assets/icons/poi/tactile/pinlet_shadow-2-medium.png,assets/icons/poi/tactile/pinlet_outline_v2-1-small.png,assets/icons/poi/tactile/pinlet-2-medium.png,assets/icons/poi/quantum/pinlet/airport_pinlet-2-medium.png&highlight=ff000000,ffffff,10bdff,ffffff&color=ff000000?scale=1'
             }
         },
         mounted() {
 
         },
         methods: {
-            testButton() {
-                this.zoom = this.zoom + 1
+            test(m) {
+                console.log(m)
             }
         }
     };
