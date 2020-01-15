@@ -6,27 +6,27 @@
                     <el-menu-item index="1" v-model="isCollapse" @click="isCollapse = !isCollapse">
                         <i class="el-icon-s-unfold" v-if="isCollapse === true"></i>
                         <i class="el-icon-s-fold" v-else></i>
-                        <span slot="title">菜单</span>
+                        <span slot="title">Menu</span>
                     </el-menu-item>
                     <el-menu-item index="2" @click="drawer = true">
                         <i class="el-icon-search"></i>
-                        <span slot="title">搜索</span>
+                        <span slot="title">Search</span>
                     </el-menu-item>
                     <el-menu-item index="3">
                         <i class="el-icon-position" @click="searchConnectsAirport"></i>
-                        <span slot="title">航线</span>
+                        <span slot="title">AirLine</span>
                     </el-menu-item>
                     <el-menu-item index="4" @click="isShowDetail = !isShowDetail">
                         <i class="el-icon-location-outline"></i>
-                        <span slot="title">详细信息</span>
+                        <span slot="title">Details</span>
                     </el-menu-item>
                     <el-submenu index="5">
                         <template slot="title">
                             <i class="el-icon-map-location"></i>
-                            <span>地图样式</span>
+                            <span>Map style</span>
                         </template>
                         <el-menu-item-group>
-                            <template slot="title">地图样式</template>
+                            <template slot="title">Map style</template>
                             <el-menu-item index="1-1" @click="selectMapType('roadmap')">roadmap</el-menu-item>
                             <el-menu-item index="1-2" @click="selectMapType('satellite')">satellite</el-menu-item>
                             <el-menu-item index="1-3" @click="selectMapType('hybrid')">hybrid</el-menu-item>
@@ -36,10 +36,10 @@
                     <el-submenu index="6">
                         <template slot="title">
                             <i class="el-icon-setting"></i>
-                            <span>语言设置</span>
+                            <span>Language settings</span>
                         </template>
                         <el-menu-item-group>
-                            <template slot="title">语言设置</template>
+                            <template slot="title">Language settings</template>
                             <el-menu-item index="1-1">English</el-menu-item>
                             <el-menu-item index="1-2">Chinese</el-menu-item>
                             <el-menu-item index="1-3">Japanese</el-menu-item>
@@ -68,11 +68,11 @@
                 </el-card>
             </el-aside>
             <el-container>
-                <el-header>
-                    <el-button @click="test" type="primary" style="margin-left: 16px;">
-                        点我
-                    </el-button>
-                </el-header>
+                <!--<el-header>-->
+                <!--<el-button @click="test" type="primary" style="margin-left: 16px;">-->
+                <!--点我-->
+                <!--</el-button>-->
+                <!--</el-header>-->
                 <el-main style="padding: 0px">
                     <google-map
                         :map-type="mapType"
@@ -90,11 +90,11 @@
                 :direction="direction"
                 :with-header="false"
             >
-                <div class="drawer-title">我嵌套了搜索程序!</div>
+                <div class="drawer-title">Search airports by country!</div>
                 <div class="drawer-content">
                     <el-form :model="form">
-                        <el-form-item label="选择国家" :label-width="formLabelWidth">
-                            <el-select v-model="selectedCountry" filterable placeholder="请选择国家">
+                        <el-form-item label="Select country" :label-width="formLabelWidth">
+                            <el-select v-model="selectedCountry" filterable placeholder="Please select a country">
                                 <el-option
                                     v-for="item in countryList"
                                     :key="item.country"
@@ -106,8 +106,8 @@
                         </el-form-item>
                     </el-form>
                     <div class="drawer-footer">
-                        <el-button @click="drawer = false">取 消</el-button>
-                        <el-button type="primary" @click="searchButton">{{ '确 定' }}</el-button>
+                        <el-button @click="drawer = false">Cancel</el-button>
+                        <el-button type="primary" @click="searchButton">{{ 'Confirm' }}</el-button>
                     </div>
                 </div>
             </el-drawer>
@@ -145,7 +145,7 @@
                 isCollapse: true,
                 isShowDetail: false,
                 drawer: false,
-                drawerAirportInfo: true,
+                drawerAirportInfo: false,
                 direction: 'ltr',
 
                 AirportInfo: [],
@@ -162,14 +162,16 @@
                     resource: '',
                     desc: ''
                 },
-                formLabelWidth: '80px',
+                formLabelWidth: '120px',
                 timer: null,
-                selectedCountry: '',
+                selectedCountry: 'Q17',
                 countryList: []
             }
         },
         created() {
             this.searchCountry()
+            this.searchAirLine()
+
         },
         methods: {
             handleOpenMenu(key, keyPath) {
@@ -187,8 +189,6 @@
             },
             searchCountry() {
                 sparqlApi.searchCountry().then((data) => {
-                    console.log("显示data")
-                    console.log(data)
                     data.results.bindings.forEach(item => {
                         this.countryList.push({
                             country: item.country.value.substring(31),
@@ -201,8 +201,6 @@
                 sparqlApi.searchAirport(this.selectedCountry).then((data) => {
                     this.markers = []
                     data.results.bindings.forEach(item => {
-                        // eslint-disable-next-line no-console
-                        console.log(item)
                         this.markers.push({
                             label: item.airport.value,
                             address: item.airportLabel.value,
@@ -217,7 +215,6 @@
                 sparqlApi.searchConnectsAirport().then((data) => {
                     this.connectsAirportInfo = []
                     data.results.bindings.forEach(item => {
-                        // eslint-disable-next-line no-console
                         this.connectsAirportInfo.push({
                             label: item.connectsairportLabel.value,
                             position: pointToLatLng.pointToLat(item.coor.value),
@@ -225,6 +222,8 @@
                         })
                     })
                     this.createAirLine()
+                    this.markers = this.connectsAirportInfo
+
                 })
             },
             createAirLine() {

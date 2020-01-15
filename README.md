@@ -1,6 +1,9 @@
 # googlemap-sparql
 
 [![](https://img.shields.io/travis/iview/iview.svg?style=flat-square)](https://travis-ci.org/iview/iview)
+[![vue](https://img.shields.io/badge/vue-2.6.10-brightgreen.svg?style=flat-square)](https://github.com/vuejs/vue)
+[![element ui](https://img.shields.io/badge/element-2.13.0-brightgreen.svg?style=flat-square)](https://github.com/ElemeFE/element)
+
 
 ## About
 googlemap-sparql is a front-end website airport map solution，It based on [Vue.js](https://github.com/vuejs/vue) and use [Wikidata Query Service](https://www.wikidata.org/)  
@@ -10,6 +13,8 @@ googlemap-sparql is a front-end website airport map solution，It based on [Vue.
 * Show selected Aircraft route
 * Show airport details information
 
+![image](https://github.com/xuyuejun/googlemap-sparql/blob/master/src/assets/screen.png?raw=true)
+
 ## Advanced Queries
 ### Search country
 ```
@@ -17,7 +22,7 @@ SELECT ?country ?label
 WHERE
 {
     ?country wdt:P31 wd:Q6256.
-    ?country rdfs:label ?label filter (lang(?label) = "zh").
+    ?country rdfs:label ?label filter (lang(?label) = "en").
 }
 ```
 
@@ -69,6 +74,7 @@ yarn serve
 ```
 yarn build
 ```
+
 
 ### Customize configuration
 See [Configuration Reference](https://cli.vuejs.org/config/).

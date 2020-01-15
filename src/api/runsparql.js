@@ -20,7 +20,7 @@ export default {
     searchCountry (){
         const searchCountry = `SELECT ?country ?label WHERE {
             ?country wdt:P31 wd:Q6256.
-            ?country rdfs:label ?label filter (lang(?label) = "zh").
+            ?country rdfs:label ?label filter (lang(?label) = "en").
         }`;
 
         return queryDispatcher.query( searchCountry )
@@ -33,7 +33,7 @@ export default {
             wdt:P625 ?coor;
             wdt:P856 ?website;
             wdt:P18 ?image.
-          SERVICE wikibase:label { bd:serviceParam wikibase:language "[AUTO_LANGUAGE],zh". }
+          SERVICE wikibase:label { bd:serviceParam wikibase:language "[AUTO_LANGUAGE],en". }
         }`;
         return queryDispatcher.query( searchAirport )
     },
