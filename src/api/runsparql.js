@@ -36,5 +36,19 @@ export default {
           SERVICE wikibase:label { bd:serviceParam wikibase:language "[AUTO_LANGUAGE],zh". }
         }`;
         return queryDispatcher.query( searchAirport )
+    },
+    searchConnectsAirport () {
+        const connectsAirport = `SELECT ?connectsairport ?connectsairportLabel ?place_served ?place_servedLabel ?coor ?image
+            WHERE
+            {
+              VALUES ?airport { wd:Q17480 } # Antwerp international airport  wd:Q17480
+              ?airport wdt:P81 ?connectsairport ;
+                       wdt:P625 ?base_airport_coor .
+              ?connectsairport wdt:P931 ?place_served ;
+                               wdt:P625 ?coor ;
+                               wdt:P18 ?image .
+              SERVICE wikibase:label { bd:serviceParam wikibase:language "en". }
+            }`;
+        return queryDispatcher.query( connectsAirport )
     }
 }

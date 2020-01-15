@@ -13,7 +13,7 @@
                         <span slot="title">搜索</span>
                     </el-menu-item>
                     <el-menu-item index="3">
-                        <i class="el-icon-position" @click="searchAirLine"></i>
+                        <i class="el-icon-position" @click="searchConnectsAirport"></i>
                         <span slot="title">航线</span>
                     </el-menu-item>
                     <el-menu-item index="4" @click="isShowDetail = !isShowDetail">
@@ -74,10 +74,16 @@
                     </el-button>
                 </el-header>
                 <el-main style="padding: 0px">
-                    <google-map :map-type="mapType" :markers="markers"></google-map>
+                    <google-map
+                        :map-type="mapType"
+                        :markers="markers"
+                        :paths="AirLineInfo"
+                        @click-point="clickPoint"
+                    >
+                    </google-map>
                 </el-main>
             </el-container>
-
+            <!--搜索机场-->
             <el-drawer
                 title="搜索机场"
                 :visible.sync="drawer"
@@ -105,6 +111,19 @@
                     </div>
                 </div>
             </el-drawer>
+            <!--显示机场详细信息-->
+            <el-drawer
+                title="搜索机场"
+                :visible.sync="drawerAirportInfo"
+                :direction="direction"
+                :modal="false"
+                :with-header="false"
+                class="drawer-airport-Info"
+            >
+                <el-image :src="AirportInfo.image" >123</el-image>
+                <div style="font-size: 20px">{{ this.AirportInfo.address }}</div>
+            </el-drawer>
+
         </el-container>
     </div>
 </template>
@@ -126,8 +145,13 @@
                 isCollapse: true,
                 isShowDetail: false,
                 drawer: false,
+                drawerAirportInfo: true,
                 direction: 'ltr',
 
+                AirportInfo: [],
+                connectsAirportInfo: [],
+                AirLineInfo: [],
+                testImg: 'https://cube.elemecdn.com/6/94/4d3ea53c084bad6931a56d5158a48jpeg.jpeg',
                 form: {
                     name: '',
                     region: '',
@@ -183,13 +207,46 @@
                             label: item.airport.value,
                             address: item.airportLabel.value,
                             web: item.website.value,
-                            position: pointToLatLng.pointToLat(item.coor.value)
+                            position: pointToLatLng.pointToLat(item.coor.value),
+                            image: item.image.value
                         })
                     })
                 })
             },
+            searchConnectsAirport() {
+                sparqlApi.searchConnectsAirport().then((data) => {
+                    this.connectsAirportInfo = []
+                    data.results.bindings.forEach(item => {
+                        // eslint-disable-next-line no-console
+                        this.connectsAirportInfo.push({
+                            label: item.connectsairportLabel.value,
+                            position: pointToLatLng.pointToLat(item.coor.value),
+                            image: item.image.value
+                        })
+                    })
+                    this.createAirLine()
+                })
+            },
+            createAirLine() {
+                this.connectsAirportInfo.forEach(item => {
+                    console.log(item)
+                    this.AirLineInfo.push({
+                        paths: [
+                            {lat: 51.189444444, lng: 4.460277777},
+                            item.position
+                        ],
+                    })
+                })
+            },
             test() {
-                console.log(this.countryList)
+                // this.drawerAirportInfo = true
+                console.log(this.AirLineInfo)
+            },
+            clickPoint(m) {
+                console.log("On click point")
+                this.drawerAirportInfo = true
+                console.log(m)
+                this.AirportInfo = m
             },
             test2() {
                 console.log(pointToLatLng.pointToLat("Point(-15.749 28.536)"))
@@ -222,5 +279,8 @@
     }
     .drawer-footer {
         display: flex;
+    }
+    .drawer-airport-Info {
+        width: 1200px;
     }
 </style>

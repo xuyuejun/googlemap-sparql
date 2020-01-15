@@ -24,9 +24,10 @@
                 @click="test(m)"
             />
             <GmapPolyline
-                :path="paths"
+                :key="index"
+                v-for="(p, index) in paths"
+                :path="p.paths"
             />
-            <!--@click="center=m.position"-->
         </GmapMap>
     </div>
 </template>
@@ -36,7 +37,8 @@
         name: 'GoogleMap',
         props: [
             "mapType",
-            "markers"
+            "markers",
+            "paths"
         ],
         data() {
             return {
@@ -45,12 +47,12 @@
                     lng: 139.41
                 },
                 zoom: 5,
-                paths: [
-                    {lat: 37.772, lng: -122.214},
-                    {lat: 21.291, lng: -157.821},
-                    {lat: -18.142, lng: 178.431},
-                    {lat: -27.467, lng: 153.027}
-                ],
+                // paths: [
+                //     {lat: 37.772, lng: -122.214},
+                //     {lat: 21.291, lng: -157.821},
+                //     {lat: -18.142, lng: 178.431},
+                //     {lat: -27.467, lng: 153.027}
+                // ],
                 image: 'https://www.google.co.jp/maps/vt/icon/name=assets/icons/poi/tactile/pinlet_shadow-2-medium.png,assets/icons/poi/tactile/pinlet_outline_v2-2-medium.png,assets/icons/poi/tactile/pinlet-2-medium.png,assets/icons/poi/quantum/pinlet/airport_pinlet-2-medium.png&highlight=ff000000,ffffff,ea4335,ffffff?scale=1',
                 // image: 'https://www.google.es/maps/vt/icon/name=assets/icons/poi/tactile/pinlet_shadow-2-medium.png,assets/icons/poi/tactile/pinlet_outline_v2-1-small.png,assets/icons/poi/tactile/pinlet-2-medium.png,assets/icons/poi/quantum/pinlet/airport_pinlet-2-medium.png&highlight=ff000000,ffffff,10bdff,ffffff&color=ff000000?scale=1'
             }
@@ -60,7 +62,8 @@
         },
         methods: {
             test(m) {
-                console.log(m)
+                this.center = m.position
+                this.$emit('click-point',m)
             }
         }
     };

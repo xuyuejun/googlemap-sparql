@@ -29,24 +29,16 @@ SELECT ?airport ?airportLabel ?place_served ?coor ?website ?image WHERE {
   SERVICE wikibase:label { bd:serviceParam wikibase:language "[AUTO_LANGUAGE],en". }
 }
 
-# Get latitude longitude coordinates of capital
-# Gelatitude longitude coordinates of birth place
-SELECT DISTINCT ?countryLabel ?capitalLabel ?population ?capital_lon ?capital_lat ?mayorLabel ?birth_date ?age ?birth_place ?birth_placeLabel ?birth_place_lon ?birth_place_lat WHERE {
-  ?country wdt:P17 wd:Q17;
-    wdt:P36 ?capital.
-  OPTIONAL { ?capital wdt:P1082 ?population. }
-  ?capital (p:P625/psv:P625) ?capital_node.
-  ?capital_node wikibase:geoLatitude ?capital_lat;
-    wikibase:geoLongitude ?capital_lon.
-  ?capital p:P6 ?statement.
-  ?statement ps:P6 ?mayor.
-  FILTER(NOT EXISTS { ?statement pq:P582 ?end_date. })
-  ?mayor wdt:P569 ?birth_date.
-  BIND((YEAR(NOW())) - (YEAR(?birth_date)) AS ?age)
-  ?mayor wdt:P19 ?birth_place.
-  ?birth_place wdt:P625 ?birth_place_coordinates;
-    (p:P625/psv:P625) ?birth_place_node.
-  ?birth_place_node wikibase:geoLatitude ?birth_place_lat;
-    wikibase:geoLongitude ?birth_place_lon.
-  SERVICE wikibase:label { bd:serviceParam wikibase:language "[AUTO_LANGUAGE],en". }
+# Destinations from Antwerp International airport
+
+SELECT ?connectsairport ?connectsairportLabel ?place_served ?place_servedLabel ?coor ?image
+WHERE
+{
+  VALUES ?airport { wd:Q17480 } # Antwerp international airport  wd:Q17480
+  ?airport wdt:P81 ?connectsairport ;
+           wdt:P625 ?base_airport_coor .
+  ?connectsairport wdt:P931 ?place_served ;
+                   wdt:P625 ?coor ;
+                   wdt:P18 ?image .
+  SERVICE wikibase:label { bd:serviceParam wikibase:language "en". }
 }
