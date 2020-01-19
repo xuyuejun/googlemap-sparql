@@ -6,73 +6,44 @@
                     <el-menu-item index="1" v-model="isCollapse" @click="isCollapse = !isCollapse">
                         <i class="el-icon-s-unfold" v-if="isCollapse === true"></i>
                         <i class="el-icon-s-fold" v-else></i>
-                        <span slot="title">Menu</span>
+                        <span slot="title">{{ $t('menu') }}</span>
                     </el-menu-item>
                     <el-menu-item index="2" @click="drawer = true">
                         <i class="el-icon-search"></i>
-                        <span slot="title">Search</span>
+                        <span slot="title">{{ $t('search') }}</span>
                     </el-menu-item>
                     <el-menu-item index="3">
                         <i class="el-icon-position" @click="searchConnectsAirport"></i>
-                        <span slot="title">AirLine</span>
+                        <span slot="title">{{ $t('airline') }}</span>
                     </el-menu-item>
-                    <el-menu-item index="4" @click="isShowDetail = !isShowDetail">
-                        <i class="el-icon-location-outline"></i>
-                        <span slot="title">Details</span>
-                    </el-menu-item>
-                    <el-submenu index="5">
+                    <el-submenu index="4">
                         <template slot="title">
                             <i class="el-icon-map-location"></i>
-                            <span>Map style</span>
+                            <span>{{ $t('mapStyle') }}</span>
                         </template>
                         <el-menu-item-group>
-                            <template slot="title">Map style</template>
-                            <el-menu-item index="1-1" @click="selectMapType('roadmap')">roadmap</el-menu-item>
-                            <el-menu-item index="1-2" @click="selectMapType('satellite')">satellite</el-menu-item>
-                            <el-menu-item index="1-3" @click="selectMapType('hybrid')">hybrid</el-menu-item>
-                            <el-menu-item index="1-4" @click="selectMapType('terrain')">terrain</el-menu-item>
+                            <template slot="title">{{ $t('mapStyle') }}</template>
+                            <el-menu-item index="1-1" @click="selectMapType('roadmap')">{{ $t('roadMap') }}</el-menu-item>
+                            <el-menu-item index="1-2" @click="selectMapType('satellite')">{{ $t('satellite') }}</el-menu-item>
+                            <el-menu-item index="1-3" @click="selectMapType('hybrid')">{{ $t('hybrid') }}</el-menu-item>
+                            <el-menu-item index="1-4" @click="selectMapType('terrain')">{{ $t('terrain') }}</el-menu-item>
                         </el-menu-item-group>
                     </el-submenu>
-                    <el-submenu index="6">
+                    <el-submenu index="5">
                         <template slot="title">
                             <i class="el-icon-setting"></i>
-                            <span>Language settings</span>
+                            <span>{{ $t('languageSetting') }}</span>
                         </template>
                         <el-menu-item-group>
-                            <template slot="title">Language settings</template>
-                            <el-menu-item index="1-1">English</el-menu-item>
-                            <el-menu-item index="1-2">Chinese</el-menu-item>
-                            <el-menu-item index="1-3">Japanese</el-menu-item>
+                            <template slot="title" >{{ $t('languageSetting') }}</template>
+                            <el-menu-item index="1-1" @click="languageSetting('en')">English</el-menu-item>
+                            <el-menu-item index="1-2" @click="languageSetting('zh')">中文</el-menu-item>
+                            <el-menu-item index="1-3" @click="languageSetting('ja')">日本語</el-menu-item>
                         </el-menu-item-group>
                     </el-submenu>
                 </el-menu>
             </el-aside>
-            <el-aside width="200px" v-if="isShowDetail">
-                <el-card class="box-card">
-                    <div slot="header" class="clearfix">
-                        <span>卡片名称</span>
-                        <el-button style="float: right; padding: 3px 0" type="text">操作按钮</el-button>
-                    </div>
-                    <div v-for="o in 4" :key="o" class="text item">
-                        {{'列表内容 ' + o }}
-                    </div>
-                </el-card>
-                <el-card class="box-card">
-                    <div slot="header" class="clearfix">
-                        <span>卡片名称</span>
-                        <el-button style="float: right; padding: 3px 0" type="text">操作按钮</el-button>
-                    </div>
-                    <div v-for="o in 4" :key="o" class="text item">
-                        {{'列表内容 ' + o }}
-                    </div>
-                </el-card>
-            </el-aside>
             <el-container>
-                <!--<el-header>-->
-                <!--<el-button @click="test" type="primary" style="margin-left: 16px;">-->
-                <!--点我-->
-                <!--</el-button>-->
-                <!--</el-header>-->
                 <el-main style="padding: 0px">
                     <google-map
                         :map-type="mapType"
@@ -85,15 +56,15 @@
             </el-container>
             <!--搜索机场-->
             <el-drawer
-                title="搜索机场"
+                title="Search airports"
                 :visible.sync="drawer"
                 :direction="direction"
                 :with-header="false"
             >
-                <div class="drawer-title">Search airports by country!</div>
+                <div class="drawer-title">{{ $t('searchAirportByCountry') }}</div>
                 <div class="drawer-content">
                     <el-form :model="form">
-                        <el-form-item label="Select country" :label-width="formLabelWidth">
+                        <el-form-item :label="$t('selectCountry')" :label-width="formLabelWidth">
                             <el-select v-model="selectedCountry" filterable placeholder="Please select a country">
                                 <el-option
                                     v-for="item in countryList"
@@ -106,8 +77,8 @@
                         </el-form-item>
                     </el-form>
                     <div class="drawer-footer">
-                        <el-button @click="drawer = false">Cancel</el-button>
-                        <el-button type="primary" @click="searchButton">{{ 'Confirm' }}</el-button>
+                        <el-button @click="drawer = false">{{ $t('cancel') }}</el-button>
+                        <el-button type="primary" @click="searchButton">{{ $t('confirm') }}</el-button>
                     </div>
                 </div>
             </el-drawer>
@@ -143,11 +114,10 @@
                 mapType: 'roadmap',
                 markers: [],
                 isCollapse: true,
-                isShowDetail: false,
                 drawer: false,
                 drawerAirportInfo: false,
                 direction: 'ltr',
-
+                locale: 'en',
                 AirportInfo: [],
                 connectsAirportInfo: [],
                 AirLineInfo: [],
@@ -188,7 +158,8 @@
                 this.searchAirLine()
             },
             searchCountry() {
-                sparqlApi.searchCountry().then((data) => {
+                this.countryList = []
+                sparqlApi.searchCountry(this.locale).then((data) => {
                     data.results.bindings.forEach(item => {
                         this.countryList.push({
                             country: item.country.value.substring(31),
@@ -198,7 +169,7 @@
                 })
             },
             searchAirLine() {
-                sparqlApi.searchAirport(this.selectedCountry).then((data) => {
+                sparqlApi.searchAirport(this.selectedCountry, this.locale).then((data) => {
                     this.markers = []
                     data.results.bindings.forEach(item => {
                         this.markers.push({
@@ -212,7 +183,7 @@
                 })
             },
             searchConnectsAirport() {
-                sparqlApi.searchConnectsAirport().then((data) => {
+                sparqlApi.searchConnectsAirport(this.locale).then((data) => {
                     this.connectsAirportInfo = []
                     data.results.bindings.forEach(item => {
                         this.connectsAirportInfo.push({
@@ -236,6 +207,11 @@
                         ],
                     })
                 })
+            },
+            languageSetting(lang) {
+                this.$i18n.locale = lang;
+                this.locale = lang;
+                this.searchCountry()
             },
             test() {
                 // this.drawerAirportInfo = true

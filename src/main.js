@@ -12,14 +12,13 @@ import * as VueGoogleMaps from 'vue2-google-maps'
 import axios from "axios";
 import VueAxios from 'vue-axios';
 
-// import VueI18n from 'vue-i18n'
-
 import pointToLatLng from "./assets/pointToLatLng";
+
+import i18n from './local/i18n'
 
 Vue.use(VueAxios, axios);
 Vue.use(ElementUI);
 Vue.use(pointToLatLng);
-// Vue.use(VueI18n);
 
 Vue.axios.defaults.headers.get['Content-Type'] = 'application/sparql-results+json';
 
@@ -34,5 +33,6 @@ Vue.config.productionTip = false;
 Vue.use(VueMaterial);
 
 new Vue({
+  i18n,
   render: h => h(App),
 }).$mount('#app');
